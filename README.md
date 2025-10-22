@@ -1,174 +1,179 @@
-# Cinfer - Docker部署指南
+# Cinfer
+Cinfer is a general-purpose Vision AI inference software by CamThink, open to the developer community. It supports deploying Vision AI inference services, provides model management, and exposes standard OpenAPI services. It is suitable for integrating as an image recognition AI component in vision application development, allowing you to call various models for image recognition. It is lightweight and simple, making it ideal for quickly adding models for deployment and project integration.
 
-Cinfer是一个基于FastAPI和React的AI推理平台，支持模型管理、推理请求处理和监控功能。本文档提供Docker部署指南。
 
-## 系统架构
+## Documentation
+[Quick Start](https://wiki.camthink.ai/docs/ai-application/cinfer-ai-Inference-service/quick-start)
 
-系统由以下主要组件构成：
+[User Guide](https://wiki.camthink.ai/docs/ai-application/cinfer-ai-Inference-service/quick-start)
 
-- **后端服务**：基于FastAPI的API服务，提供模型管理、推理和监控功能
-- **前端界面**：基于React的Web界面，提供用户交互
-- **数据存储**：支持SQLite（默认）或PostgreSQL数据库
+## System Architecture
 
-## 部署选项
+The system consists of the following main components:
 
-Cinfer提供以下部署方式：
+- **Backend Service**: API service based on FastAPI, providing model management, inference, and monitoring functionality
+- **Frontend Interface**: Web interface based on React, offering user interactions
+- **Data Storage**: Supports SQLite (default) or PostgreSQL databases
 
-1. **分离部署**：前端和后端分别部署在不同容器中
-2. **智能 GPU 支持**：可选择是否启用 GPU 加速。启用后，脚本能**自动检测** `x86_64` (标准PC) 和 `jetson` (Jetson/ARM) 平台，并选用对应的 Dockerfile 进行构建。
+## Deployment Options
 
-## 快速开始
+Cinfer provides the following deployment methods:
 
-### 先决条件
+1. **Separated Deployment**: Frontend and backend are deployed in separate containers
+2. **Intelligent GPU Support**: You can choose whether to enable GPU acceleration. When enabled, the script will **automatically detect** the `x86_64` (Standard PC) or `jetson` (Jetson/ARM) platforms and select the corresponding Dockerfile for building.
+
+## Quick Start
+
+### Prerequisites
 
 - Docker Engine (20.10.0+)
 - Docker Compose (v2.0.0+)
-- 如使用GPU，需要安装NVIDIA Docker支持
+- If using GPU, NVIDIA Docker support is required
 
-### 使用部署脚本
+### Using the Deployment Script
 
-项目提供了一个灵活的部署脚本`deploy.sh`，支持多种部署方式和配置选项。
+The project provides a flexible deployment script `deploy.sh`, supporting multiple deployment methods and configuration options.
 
-#### 基本用法
+#### Basic Usage
 
 ```bash
-# 使用默认配置部署（分离部署，前端端口3000，后端端口8000）
+# Deploy with default configuration (separated deployment, frontend port 3000, backend port 8000)
 ./deploy.sh
 
-# 使用GPU部署
+# Deploy with GPU support
 ./deploy.sh --gpu yes
 
-# 自定义端口
+# Customize ports
 ./deploy.sh --backend-port 8001 --frontend-port 3001
 
-# 指定后端主机
+# Specify backend host
 ./deploy.sh --host 192.168.100.2
 ```
 
-#### 重新构建镜像
+#### Rebuild Image
 
-如果修改了Dockerfile或源代码，可以使用以下命令强制重新构建镜像：
+If you have modified the Dockerfile or source code, you can force rebuilding the image using the following commands:
 
 ```bash
-# 重新构建并启动
+# Rebuild and start
 ./deploy.sh --rebuild yes
 
-# 仅重新构建镜像不启动
+# Only rebuild the image, do not start
 ./deploy.sh --action build
 
-# 重新构建特定实例
+# Rebuild a specific instance
 ./deploy.sh --name prod --rebuild yes
 ```
 
-#### 多实例部署
+#### Multi-instance Deployment
 
 ```bash
-# 部署生产环境
+# Deploy production environment
 ./deploy.sh --name prod --gpu yes
 
-# 同时部署开发环境
+# Deploy development environment simultaneously
 ./deploy.sh --name dev --backend-port 8001 --frontend-port 3001
 ```
 
-#### 管理实例
+#### Manage Instances
 
 ```bash
-# 停止实例
+# Stop an instance
 ./deploy.sh --name prod --action down
 
-# 重启实例
+# Restart an instance
 ./deploy.sh --name dev --action restart
 
-# 查看日志
+# View logs
 ./deploy.sh --name prod --action logs
 ```
 
-### 部署脚本选项
+### Deployment Script Options
 
-| 选项 | 长选项            | 说明                                                         | 默认值   |
-| ---- | ----------------- | ------------------------------------------------------------ | -------- |
-|      | --arch            | 指定 GPU 架构: `x86_64` 或 `jetson`。                        | 自动检测 |
-| `-g` | `--gpu`           | 是否使用GPU: yes 或 no                                       | no       |
-| `-b` | `--backend-port`  | 后端服务端口                                                 | 8000     |
-| `-f` | `--frontend-port` | 前端服务端口                                                 | 3000     |
-| `-n` | `--name`          | 实例名称                                                     | default  |
-| `-a` | `--action`        | 操作: up(启动), down(停止), restart(重启), logs(查看日志), build(构建) | up       |
-| `-h` | `--host`          | 后端主机名或IP地址                                           | backend  |
-| `-r` | `--rebuild`       | 是否重新构建镜像: yes 或 no                                  | no       |
+| Option | Long Option        | Description                                                                                            | Default   |
+| ------ | ----------------- | ------------------------------------------------------------------------------------------------------ | --------- |
+|        | --arch            | Specify GPU architecture: `x86_64` or `jetson`.                                                        | Auto      |
+| `-g`   | `--gpu`           | Use GPU: yes or no                                                                                     | no        |
+| `-b`   | `--backend-port`  | Backend service port                                                                                   | 8000      |
+| `-f`   | `--frontend-port` | Frontend service port                                                                                  | 3000      |
+| `-n`   | `--name`          | Instance name                                                                                          | default   |
+| `-a`   | `--action`        | Action: up (start), down (stop), restart (restart), logs (view logs), build (build)                    | up        |
+| `-h`   | `--host`          | Backend hostname or IP address                                                                         | backend   |
+| `-r`   | `--rebuild`       | Rebuild image: yes or no                                                                               | no        |
 
-## 手动配置
+## Manual Configuration
 
-如果需要手动配置部署，可以参考以下步骤：
+If you need to manually configure deployment, you can follow the steps below:
 
-### 1. 后端配置
+### 1. Backend Configuration
 
-后端环境变量在`backend/docker/prod.env`文件中配置，主要包括：
+Backend environment variables are configured in the `backend/docker/prod.env` file, mainly including:
 
-- 服务器配置（主机、端口、工作进程数）
-- 数据库配置（类型、连接信息）
-- 日志配置
-- 安全配置（JWT密钥等）
-- 模型存储配置
+- Server configuration (host, port, number of worker processes)
+- Database configuration (type, connection info)
+- Logging configuration
+- Security configuration (JWT keys, etc.)
+- Model storage configuration
 
-### 2. 前端配置
+### 2. Frontend Configuration
 
-前端通过Nginx配置API代理，配置文件位于`web/nginx.conf`。
+The frontend configures API proxying through Nginx, with the configuration file at `web/nginx.conf`.
 
-## 数据持久化
+## Data Persistence
 
-数据存储在以下位置：
+Data is stored in the following locations:
 
-- **后端数据**：挂载到容器的`/app/data`目录
-- **数据库**：默认使用SQLite，存储在`/app/data/cinfer.db`
-- **模型文件**：存储在`/app/data/models`目录
+- **Backend Data**: Mounted to the container’s `/app/data` directory
+- **Database**: SQLite is used by default, stored at `/app/data/cinfer.db`
+- **Model Files**: Stored in the `/app/data/models` directory
 
-## 访问服务
+## Accessing the Services
 
-部署完成后，可通过以下地址访问服务：
+After deployment, you can access the services at the following addresses:
 
-- **分离部署**：
-  - 前端：`http://<主机IP>:<前端端口>`（默认为3000）
-  - 后端API：`http://<主机IP>:<后端端口>/api`（默认为8000）
-  - Swagger文档：`http://<主机IP>:<后端端口>/docs`
+- **Separated Deployment**:
+  - Frontend: `http://<host-ip>:<frontend-port>` (default: 3000)
+  - Backend API: `http://<host-ip>:<backend-port>/api` (default: 8000)
+  - Swagger Docs: `http://<host-ip>:<backend-port>/docs`
 
-- **集成部署**：
-  - 应用：`http://<主机IP>:<集成端口>`（默认为8080）
-  - API：`http://<主机IP>:<集成端口>/api`
-  - Swagger文档：`http://<主机IP>:<集成端口>/docs`
+- **Integrated Deployment**:
+  - App: `http://<host-ip>:<integrated-port>` (default: 8080)
+  - API: `http://<host-ip>:<integrated-port>/api`
+  - Swagger Docs: `http://<host-ip>:<integrated-port>/docs`
 
-## 常见问题
+## FAQ
 
-### 1. 容器无法启动
+### 1. Container Cannot Start
 
-检查Docker日志以获取详细错误信息：
+Check the Docker logs for detailed error information:
 
 ```bash
-docker logs <容器ID或名称>
+docker logs <container-id-or-name>
 ```
 
-### 2. 前端无法连接后端API
+### 2. Frontend Cannot Connect to Backend API
 
-确保Nginx配置中的`proxy_pass`指向正确的后端地址和端口。
+Ensure that the `proxy_pass` in the Nginx configuration points to the correct backend address and port.
 
-### 3. GPU支持问题
+### 3. GPU Support Issues
 
-确保主机已正确安装NVIDIA Docker支持，并且GPU驱动版本兼容。
+Make sure NVIDIA Docker support is correctly installed and your GPU driver versions are compatible.
 
-### 4. 修改代码后需要重新构建
+### 4. Need to Rebuild After Source Code Changes
 
-如果修改了Dockerfile或源代码，需要使用`--rebuild yes`参数重新构建镜像：
+If you have modified the Dockerfile or source code, use the `--rebuild yes` parameter to rebuild the image:
 
 ```bash
 ./deploy.sh --rebuild yes
 ```
 
-## 技术栈
+## Tech Stack
 
-- **后端**：Python, FastAPI, SQLAlchemy, ONNX Runtime
-- **前端**：React, TypeScript
-- **容器化**：Docker, Docker Compose
-- **Web服务器**：Nginx
+- **Backend**: Python, FastAPI, SQLAlchemy, ONNX Runtime
+- **Frontend**: React, TypeScript
+- **Containerization**: Docker, Docker Compose
+- **Web Server**: Nginx
 
-## 许可证
+## License
 
-MIT License 
+MIT License
