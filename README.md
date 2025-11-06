@@ -15,6 +15,15 @@ The system consists of the following main components:
 - **Frontend Interface**: Web interface based on React, offering user interactions
 - **Data Storage**: Supports SQLite (default) or PostgreSQL databases
 
+## Models Directory
+
+The repository ships with a `models` directory that contains sample ONNX packages ready for import. Each model folder includes the exported weights and a `params.yaml` or `params.yml` file describing how the backend should serve it, so you can copy the folder into your persistent model storage (`/app/data/models` by default) or register it through the API/UI without additional setup.
+
+- `models/80-target-rec`: General-purpose object detection covering 80 classes (COCO-style) with `best.onnx` and `params.yml`.
+- `models/generic-targe-rec`: Generic digit detection example (`0`–`9`) packaged as `meter_v5i-6.onnx` with its `params.yaml`.
+- `models/pose`: Human pose estimation sample (`yolov8n-pose.onnx`) and matching configuration.
+- `models/seg`: Instance segmentation sample (`yolov8s-seg-20240816.onnx`) using the pointer post-processing strategy.
+
 ## Deployment Options
 
 Cinfer provides the following deployment methods:
