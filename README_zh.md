@@ -16,12 +16,12 @@ Cinfer是一个基于FastAPI和React的AI推理平台，支持模型管理、推
 
 ## 模型目录
 
-仓库新增 `models` 目录，内置可直接导入的 ONNX 模型示例。每个子目录都包含模型权重以及 `params.yaml`/`params.yml` 配置文件，便于后台服务识别模型的输入输出描述。只需将子目录复制到持久化的模型存储路径（默认 `/app/data/models`），或通过 API/前端界面注册即可使用。
+仓库新增 `models` 目录，内置可直接导入的 ONNX 模型示例。每个子目录都包含模型权重以及 `params.yaml`/`params.yml` 配置文件，便于后台服务识别模型的输入输出描述。只需将子目录复制到持久化的模型存储路径（默认 `/app/data/models`），或通过 API/前端界面注册即可使用。详细说明请见 [模型目录指南](models/README_zh.md)。
 
-- `models/80-target-rec`：通用 80 类目标检测示例，提供 `best.onnx` 与 `params.yml`。
-- `models/generic-targe-rec`：数字（0-9）检测示例，提供 `meter_v5i-6.onnx` 与 `params.yaml`。
-- `models/pose`：人体姿态估计示例，提供 `yolov8n-pose.onnx` 与对应配置。
-- `models/seg`：实例分割示例，提供 `yolov8s-seg-20240816.onnx` 并采用 pointer 后处理策略。
+- `models/object-detection`：COCO 风格的 80 类目标检测模型，提供 `80-target-detection-yolo-11n.onnx` 和 `params.yml`。
+- `models/generic-target-detection`：面向数字（0–9）的轻量检测模型，提供 `meter_v5i-6.onnx` 与 `params.yaml`。
+- `models/pose-estimation`：人体姿态估计示例（`yolov8n-pose.onnx`），输出关键点与骨架信息，对应 `params.yaml`。
+- `models/instance-seg`：指针式仪表实例分割模型（`yolov8s-seg-20240816.onnx`），采用 `pointer` 后处理策略，需要额外提供量程元数据如 `scale_min`、`scale_max`。
 
 ## 部署选项
 
